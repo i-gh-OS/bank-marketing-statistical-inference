@@ -3,9 +3,137 @@ title: "P2-bancos_portug"
 output: html_notebook
 ---
 
+# 1. Descripción del dataset
 
+```{r}
+banco <- read.csv("bancos_portug.csv", sep=",", stringsAsFactors=TRUE)
+
+n_total <- nrow(banco) # Tamaño de la muestra
+
+str(banco) # nos dice el tamaño de la muestra, el numero de variables y el tipo de cada variable
+colSums(is.na(banco)) # devuelve el nº de valores NA para cada variable
+
+# Distribución de la variable respuesta
+table(banco$y)
+prop.table(table(banco$y))
+
+# Tablas rápidas de algunas categóricas
+table(banco$job)
+table(banco$marital)
+table(banco$education)
+
+# Resumen de algunas cuantitativas clave
+summary(banco[, c("age", "balance", "duration", "campaign")])
+
+
+
+```
+
+# 2. Análisis de normalidad (test de Shapiro–Wilk e histogramas y gráficos Q–Q)
+
+## Edad, Saldo, Duración de la llamada, Número de contactos
+
+```{r}
+par(mfrow = c(2,4))
+hist(banco$age, main = "Histograma de age", xlab = "Edad")
+qqnorm(banco$age); qqline(banco$age)
+hist(banco$balance, main = "Histograma de balance", xlab = "Saldo")
+qqnorm(banco$balance); qqline(banco$balance)
+hist(banco$duration, main = "Histograma duration", xlab = "Duración (s)")
+qqnorm(banco$duration); qqline(banco$duration)
+hist(banco$campaign, main = "Histograma campaign", xlab = "Número contactos")
+qqnorm(banco$campaign); qqline(banco$campaign)
+par(mfrow = c(1,1))
+
+shapiro_age <- shapiro.test(banco$age)
+shapiro_balance <- shapiro.test(banco$balance)
+shapiro_duration <- shapiro.test(banco$duration)
+shapiro_campaign <- shapiro.test(banco$campaign)
+shapiro_age
+shapiro_balance
+shapiro_duration
+shapiro_campaign
+```
+
+# 3. Contrastes de hipótesis sobre diferencia de medias
+
+## 3.1. Contraste bilateral: duración media según suscripción
+
+### Resumen descriptivo por grupos
+
+```{r}
+tapply(banco$duration, banco$y, summary)
+```
+
+### Test t de Student (Welch)
+
+```{r}
+t_test_duration <- t.test(duration ~ y,
+data = banco,
+alternative = "two.sided",
+var.equal = FALSE)
+t_test_duration
+```
+
+-   \$\\bar{x}\_1\$ (sí suscriben) = `r round(t_test_duration$estimate[2], 1)` s
+
+<!-- -->
+
+-    \$\\bar{x}\_2\$ (no suscriben) = `r round(t_test_duration$estimate[1], 1)` s
+
+## 3.2. Contraste unilateral: duración media respecto a valor histórico
+
+```{r}
+mean_duration <- mean(banco$duration)
+sd_duration <- sd(banco$duration)
+mean_duration; sd_duration
+
+t_test_one <- t.test(banco$duration,
+mu = 250,
+alternative = "greater")
+t_test_one
+```
+
+# 4. Contraste de proporciones
+
+```{r}
+# proporción de suscripciones entre dos grupos de la variable housing (tener o no hipoteca)
+
+```
+
+# 5. Análisis del impacto de los errores de tipo I y tipo II
+
+## 5.1 Regla de decisión
 
 ```{r}
 
 ```
 
+## 5.2 Error tipo II y potencia
+
+```{r}
+
+```
+
+# 6. Análisis no paramétrico
+
+## 6.1 Contraste de Wilcoxon: duración según suscripción
+
+### Medianas por grupo
+
+```{r}
+# para situarnos un poco en lo que nos podría salir
+
+```
+
+### Test de Wilcoxon
+
+```{r}
+
+```
+
+## 6.2 Contraste de Spearman: asociaición entre 'campaign' y 'duration'
+
+```{r}
+
+```
