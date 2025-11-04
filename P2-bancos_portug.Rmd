@@ -99,6 +99,7 @@ t_test_one
 ```{r}
 # proporción de suscripciones entre dos grupos de la variable housing (tener o no hipoteca)
 
+
 ```
 
 # 5. Análisis del impacto de los errores de tipo I y tipo II
