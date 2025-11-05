@@ -97,17 +97,36 @@ t_test_one
 # 4. Contraste de proporciones
 
 ```{r}
-# proporción de suscripciones entre dos grupos de la variable housing (tener o no hipoteca)
+# vamos a estudiar si hay más personas con impagos a los que se les ha concedido una hipoteca o no.  
+```
+```{r}
 
-
+data<-matrix(c(
+  sum(banco$housing=="yes"& banco$default=="yes"),
+  sum(banco$housing=="yes"& banco$default=="no"),
+  sum(banco$housing=="no" & banco$default == "yes"), sum(banco$housing=="no" & banco$default == "no")), nrow=2, byrow=TRUE)
+dimnames(data)<-list(c("Hipoteca SI","Hipoteca NO"), c("Impago SI", "Impago NO"))
+data
+```
+```{r}
+#Realizamos ahora el contraste de hipótesis
+prop.test(data)
 ```
 
 # 5. Análisis del impacto de los errores de tipo I y tipo II
 
+## Obtenemos una muestra aleatoria de 25 clientes
+```{r}
+set.seed(123)
+clientes<-banco[sample(nrow(banco),25),]
+clientes
+```
+
+
 ## 5.1 Regla de decisión
 
 ```{r}
-
+#Queremos que la nueva campaña tenga una tasa de éxito mayor a la anterior, por lo tanto el número de clientes que acepten la oferta tiene que ser superior a 3.Para considerar que hay una mejor nuestro requisito será que más de 6 personas deben de aceptar la oferta para que la nueva campaña de marketing sea exitosa. 
 ```
 
 ## 5.2 Error tipo II y potencia
