@@ -124,17 +124,46 @@ clientes
 
 
 ## 5.1 Regla de decisión
+### H0: p=0'12
+### H1: p>0'12
 
 ```{r}
 #Queremos que la nueva campaña tenga una tasa de éxito mayor a la anterior, por lo tanto el número de clientes que acepten la oferta tiene que ser superior a 3.Para considerar que hay una mejor nuestro requisito será que más de 6 personas deben de aceptar la oferta para que la nueva campaña de marketing sea exitosa. 
 ```
+## 5.2 Error tipo I
+### El error de tipo I se producirá cuando más de 6 personas acepten la oferta y en la investigación concluimos que la nueva campaña de marketing es significativamente mejor, cuando en verdad es igual que la anterior.
+```{r}
+#Para calcular el error tipo I vamos a calcular el p_valor ya que su definición es la probabilidad de cometer un error de tipo I con la muestra obtenida, llamado "alfa observado"
+n=25
+x=6
+p=x/n   #proporción muestral
+p
+p0<-0.12   #valor del parámetro si Ho es cierta
 
-## 5.2 Error tipo II y potencia
+z0<-(p-p0)/sqrt(p0*(1-p0)/n)
+z0
+```
+```{r}
+#Y ahora calculamos el p-valor:
+p_value<-1-pnorm(z0)
+p_value
+```
+### Es poco probable que más de 6 clientes acepten la oferta telefónica con la nueva campaña de marketing.
+
+## 5.3 Error tipo II y potencia
+### El error de tipo II es la probabilidad de no rechazar H0 cuando es falsa, es decir, la probabilidad de que 6 clientes o menos acepten la oferta cuando la nueva campaña de marketing es efectiva para la mitad de los clientes.
 
 ```{r}
-
+p1= 0.5
+umbral = 6
+beta<-pbinom(umbral,n,p1)
+beta
+potencia <- 1- beta
+potencia
 ```
-
+### Es una probabilidad baja de no optar por la nueva campaña de marketing cuando realmente es significativamente mejor que la anterior.
+## La potencia del contraste nos sirve para ver la capacidad del contraste para detectar la hipótesis alternativa, es decir su sensibilidad. 
+### Si quisieramos reducir ambos errores simultáneamente podríamos aumentar el tamaño muestral, cambiando también el valor crítico. 
 # 6. Análisis no paramétrico
 
 ## 6.1 Contraste de Wilcoxon: duración según suscripción
