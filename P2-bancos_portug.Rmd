@@ -135,8 +135,6 @@ H0: p=0'12 H1: p\>0'12
 
 ## 5.2 Error tipo I
 
-El error de tipo I se producirá cuando más de 6 personas acepten la oferta y en la investigación concluimos que la nueva campaña de marketing es significativamente mejor, cuando en verdad es igual que la anterior.
-
 ```{r}
 #Para calcular el error tipo I vamos a calcular el p_valor ya que su definición es la probabilidad de cometer un error de tipo I con la muestra obtenida, llamado "alfa observado"
 n=25
@@ -151,28 +149,24 @@ z0
 
 ```{r}
 #Y ahora calculamos el p-valor:
-p_value<-1-pnorm(z0)
-p_value
+p_value_7<-1-pnorm(z0)
+p_value_7
 ```
 
 Es poco probable que más de 6 clientes acepten la oferta telefónica con la nueva campaña de marketing.
 
 ## 5.3 Error tipo II y potencia
 
-El error de tipo II es la probabilidad de no rechazar H0 cuando es falsa, es decir, la probabilidad de que 6 clientes o menos acepten la oferta cuando la nueva campaña de marketing es efectiva para la mitad de los clientes.
-
 ```{r}
 #H0: p=0.12
 #H1: p=0.5
 p1= 0.5
 umbral = 7
-beta<-pbinom(umbral,n,p1)
-beta
-potencia <- 1- beta
-potencia
+beta_7_p5<-pbinom(umbral,n,p1)
+beta_7_p5
+potencia_7_p5 <- 1- beta_7_p5
+potencia_7_p5
 ```
-
-Es una probabilidad baja de no optar por la nueva campaña de marketing cuando realmente es significativamente mejor que la anterior. La potencia del contraste nos sirve para ver la capacidad del contraste para detectar la hipótesis alternativa, es decir su sensibilidad.
 
 ```{r}
 #H0: p=0.12
@@ -184,8 +178,6 @@ beta_7_p7
 potencia_7_p7 <- 1- beta_7_p7
 potencia_7_p7
 ```
-
-Es una probabilidad baja de no optar por la nueva campaña de marketing cuando realmente es significativamente mejor para un 70% de clientes. Si quisieramos reducir ambos errores simultáneamente podríamos aumentar el tamaño muestral, cambiando también el valor crítico.Nuestro valor crítico ahora es 7.
 
 ```{r}
 x=6
@@ -208,10 +200,10 @@ p_value_6
 #H1: p=0.5
 p1= 0.5
 umbral = 6
-beta_6<-pbinom(umbral,n,p1)
-beta_6
-potencia_6 <- 1- beta_6
-potencia_6
+beta_6_p5<-pbinom(umbral,n,p1)
+beta_6_p5
+potencia_6_p5 <- 1- beta_6_p5
+potencia_6_p5
 ```
 
 ```{r}
@@ -227,7 +219,7 @@ potencia_6_p7
 
 ```{r}
 errores<-matrix(c(
-  p_value,beta, beta_7, potencia, potencia_7_p7,p_value_6, beta_6, beta_6_p7,potencia_6,potencia_6_p7), nrow=2, byrow=TRUE)
+  p_value_7,beta_7_p5, beta_7_p7, potencia_7_p5, potencia_7_p7,p_value_6, beta_6_p5, beta_6_p7,potencia_6_p5,potencia_6_p7), nrow=2, byrow=TRUE)
 dimnames(errores)<-list(c("7 o más clientes","6 o más clientes"), c("Error tipo I", "Error tipo II con p=0.5", "Error tipo II con p=0.7", "Potencia con p= 0.5", "Potencia con p=0.7"))
 errores
 ```
