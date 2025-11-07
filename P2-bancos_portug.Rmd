@@ -11,23 +11,34 @@ banco <- read.csv("bancos_portug.csv", sep=",", stringsAsFactors=TRUE)
 n_total <- nrow(banco) # Tamaño de la muestra
 
 str(banco) # nos dice el tamaño de la muestra, el numero de variables y el tipo de cada variable
-colSums(is.na(banco)) # devuelve el nº de valores NA para cada variable
+```
 
-# Distribución de la variable respuesta
+```{r}
+colSums(is.na(banco)) # devuelve el nº de valores NA para cada variable
+```
+
+```{r}
+# Distribución de la variable respuesta}
 table(banco$y)
 prop.table(table(banco$y))
+```
 
+```{r}
 # Tablas rápidas de algunas categóricas
 table(banco$job)
 table(banco$marital)
 table(banco$education)
+```
 
+```{r}
 # Resumen de algunas cuantitativas clave
 summary(banco[, c("age", "balance", "duration", "campaign")])
-
-
-
 ```
+
+```{r}
+barplot(prop.table(table(banco$y)), main = "Proporción de suscripción", ylab = "Proporción")
+```
+
 
 # 2. Análisis de normalidad (test de Shapiro–Wilk e histogramas y gráficos Q–Q)
 
@@ -59,7 +70,14 @@ shapiro_campaign
 
 ## 3.1. Contraste bilateral: duración media según suscripción
 
-### Resumen descriptivo por grupos
+### Análisis grafico previo orientativo
+
+```{r}
+boxplot(duration ~ y, data = banco,
+        main = "Duración de la llamada según suscripción",
+        xlab = "Suscripción (y)", ylab = "Duración (s)")
+```
+### Resumen descriptivo por grupos para ubicarnos
 
 ```{r}
 tapply(banco$duration, banco$y, summary)
@@ -232,17 +250,25 @@ errores
 
 ```{r}
 # para situarnos un poco en lo que nos podría salir
-
+tapply(banco$duration, banco$y, median)
 ```
 
 ### Test de Wilcoxon
 
 ```{r}
-
+wilcox_duration <- wilcox.test(duration ~ y,data = banco,alternative = "two.sided")
+wilcox_duration
 ```
 
 ## 6.2 Contraste de Spearman: asociaición entre 'campaign' y 'duration'
 
 ```{r}
+plot(banco$campaign, banco$duration,
+xlab = "Número de contactos (campaign)",
+ylab = "Duración de la llamada (s)",
+main = "campaign vs duration")
 
+corr_spear <- cor.test(banco$campaign,banco$duration,method = "spearman",
+                        alternative = "two.sided")
+corr_spear
 ```
