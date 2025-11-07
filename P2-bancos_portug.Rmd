@@ -79,7 +79,7 @@ t_test_duration
 
 <!-- -->
 
--    \$\\bar{x}\_2\$ (no suscriben) = `r round(t_test_duration$estimate[1], 1)` s
+-   \$\\bar{x}\_2\$ (no suscriben) = `r round(t_test_duration$estimate[1], 1)` s
 
 ## 3.2. Contraste unilateral: duración media respecto a valor histórico
 
@@ -99,6 +99,7 @@ t_test_one
 ```{r}
 # vamos a estudiar si hay más personas con impagos a los que se les ha concedido una hipoteca o no.  
 ```
+
 ```{r}
 
 data<-matrix(c(
@@ -108,6 +109,7 @@ data<-matrix(c(
 dimnames(data)<-list(c("Hipoteca SI","Hipoteca NO"), c("Impago SI", "Impago NO"))
 data
 ```
+
 ```{r}
 #Realizamos ahora el contraste de hipótesis
 prop.test(data)
@@ -115,23 +117,26 @@ prop.test(data)
 
 # 5. Análisis del impacto de los errores de tipo I y tipo II
 
-## Obtenemos una muestra aleatoria de 25 clientes
+Obtenemos una muestra aleatoria de 25 clientes
+
 ```{r}
 set.seed(42)
 clientes<-banco[sample(nrow(banco),25),]
 clientes
 ```
 
-
 ## 5.1 Regla de decisión
-### H0: p=0'12
-### H1: p>0'12
+
+H0: p=0'12 H1: p\>0'12
 
 ```{r}
 #Queremos que la nueva campaña tenga una tasa de éxito mayor a la anterior, por lo tanto el número de clientes que acepten la oferta tiene que ser superior a 3.Para considerar que hay una mejor nuestro requisito será que más de 7 personas deben de aceptar la oferta para que la nueva campaña de marketing sea exitosa. 
 ```
+
 ## 5.2 Error tipo I
-### El error de tipo I se producirá cuando más de 6 personas acepten la oferta y en la investigación concluimos que la nueva campaña de marketing es significativamente mejor, cuando en verdad es igual que la anterior.
+
+El error de tipo I se producirá cuando más de 6 personas acepten la oferta y en la investigación concluimos que la nueva campaña de marketing es significativamente mejor, cuando en verdad es igual que la anterior.
+
 ```{r}
 #Para calcular el error tipo I vamos a calcular el p_valor ya que su definición es la probabilidad de cometer un error de tipo I con la muestra obtenida, llamado "alfa observado"
 n=25
@@ -143,15 +148,18 @@ p0<-0.12   #valor del parámetro si Ho es cierta
 z0<-(p-p0)/sqrt(p0*(1-p0)/n)
 z0
 ```
+
 ```{r}
 #Y ahora calculamos el p-valor:
 p_value<-1-pnorm(z0)
 p_value
 ```
-### Es poco probable que más de 6 clientes acepten la oferta telefónica con la nueva campaña de marketing.
+
+Es poco probable que más de 6 clientes acepten la oferta telefónica con la nueva campaña de marketing.
 
 ## 5.3 Error tipo II y potencia
-### El error de tipo II es la probabilidad de no rechazar H0 cuando es falsa, es decir, la probabilidad de que 6 clientes o menos acepten la oferta cuando la nueva campaña de marketing es efectiva para la mitad de los clientes.
+
+El error de tipo II es la probabilidad de no rechazar H0 cuando es falsa, es decir, la probabilidad de que 6 clientes o menos acepten la oferta cuando la nueva campaña de marketing es efectiva para la mitad de los clientes.
 
 ```{r}
 #H0: p=0.12
@@ -163,20 +171,67 @@ beta
 potencia <- 1- beta
 potencia
 ```
-### Es una probabilidad baja de no optar por la nueva campaña de marketing cuando realmente es significativamente mejor que la anterior.
-## La potencia del contraste nos sirve para ver la capacidad del contraste para detectar la hipótesis alternativa, es decir su sensibilidad. 
+
+Es una probabilidad baja de no optar por la nueva campaña de marketing cuando realmente es significativamente mejor que la anterior. La potencia del contraste nos sirve para ver la capacidad del contraste para detectar la hipótesis alternativa, es decir su sensibilidad.
+
 ```{r}
 #H0: p=0.12
 #H1: p=0.7
 p2= 0.7
 umbral = 7
-beta<-pbinom(umbral,n,p2)
-beta
-potencia <- 1- beta
-potencia
+beta_7_p7<-pbinom(umbral,n,p2)
+beta_7_p7
+potencia_7_p7 <- 1- beta_7_p7
+potencia_7_p7
 ```
-### Es una probabilidad baja de no optar por la nueva campaña de marketing cuando realmente es significativamente mejor para un70% de clientes.
-### Si quisieramos reducir ambos errores simultáneamente podríamos aumentar el tamaño muestral, cambiando también el valor crítico.
+
+Es una probabilidad baja de no optar por la nueva campaña de marketing cuando realmente es significativamente mejor para un 70% de clientes. Si quisieramos reducir ambos errores simultáneamente podríamos aumentar el tamaño muestral, cambiando también el valor crítico.Nuestro valor crítico ahora es 7.
+
+```{r}
+x=6
+p_6=x/n   #proporción muestral
+p_6
+p<-0.12   #valor del parámetro si Ho es cierta
+
+z0_6<-(p_6-p)/sqrt(p*(1-p)/n)
+z0_6
+```
+
+```{r}
+#Y ahora calculamos el p-valor:
+p_value_6<-1-pnorm(z0_6)
+p_value_6
+```
+
+```{r}
+#H0: p=0.12
+#H1: p=0.5
+p1= 0.5
+umbral = 6
+beta_6<-pbinom(umbral,n,p1)
+beta_6
+potencia_6 <- 1- beta_6
+potencia_6
+```
+
+```{r}
+#H0: p=0.12
+#H1: p=0.7
+p2= 0.7
+umbral = 6
+beta_6_p7<-pbinom(umbral,n,p2)
+beta_6_p7
+potencia_6_p7 <- 1- beta_6_p7
+potencia_6_p7
+```
+
+```{r}
+errores<-matrix(c(
+  p_value,beta, beta_7, potencia, potencia_7_p7,p_value_6, beta_6, beta_6_p7,potencia_6,potencia_6_p7), nrow=2, byrow=TRUE)
+dimnames(errores)<-list(c("7 o más clientes","6 o más clientes"), c("Error tipo I", "Error tipo II con p=0.5", "Error tipo II con p=0.7", "Potencia con p= 0.5", "Potencia con p=0.7"))
+errores
+```
+
 # 6. Análisis no paramétrico
 
 ## 6.1 Contraste de Wilcoxon: duración según suscripción
